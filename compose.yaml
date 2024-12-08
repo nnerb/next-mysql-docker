@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000" 
+    environment:
+      NODE_ENV: development  # Set the environment to 'development'
+    develop:
+      watch:
+        - action: sync
+          path: ./app        # Path to your app directory on the host
+          target: /app       # Path where files will be synced inside the container
+          ignore:
+            - node_modules/   # Ignore node_modules directory to avoid syncing it
+        - action: rebuild
+          path: package.json
+
+  # MySQL database
+#   mysql:
+#     image: mysql:5.7  # Use MySQL version 5.7
+#     environment:
+#       MYSQL_ROOT_PASSWORD: rootpassword  # Set the MySQL root password
+#       MYSQL_DATABASE: todoapp  # Create the 'todoapp' database on startup
+#     volumes:
+#       - mysql-data:/var/lib/mysql  # Persist MySQL data between container restarts
+#     ports:
+#       - "3306:3306"  # Expose MySQL on port 3306
+# volumes:
+#   mysql-data:  # Declare the volume for MySQL persistence
