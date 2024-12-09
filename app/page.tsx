@@ -9,16 +9,16 @@ export default function Home() {
 
   const [task, setTask] = useState("")
 
-  const { 
-    data,
-    error,
-    isLoading,
-    refetch: refetchGetTodos
-  } = useQuery<TodoProps[]>({
-    queryKey: ['todos'],
-    queryFn: fetchTodos
-  })
-  const todos = data ?? []
+    const { 
+      data: fetchTodo,
+      error: isFetchTodosError,
+      isLoading: isFetchTodosLoading,
+      refetch: refetchGetTodos
+    } = useQuery<TodoProps[]>({
+      queryKey: ['todos'],
+      queryFn: fetchTodos
+    })
+    const todos = fetchTodo ?? []
 
   const {
     mutate: createTodoMutation,
@@ -56,12 +56,12 @@ export default function Home() {
   }, [isCreateTodoSuccess, refetchGetTodos, isDeleteTodoSuccess])
 
 
-  if (error) {
-    return <p>There's an error fetching the data.</p>
-  }
-
-  if (isLoading) {
-    return <p>Loading...</p>
+  if (isFetchTodosError) {
+    return ( 
+      <p className="text-xl text-black bg-red-300 py-2 px-4 text-center">
+        There's an error fetching the data.
+      </p>
+    )
   }
  
   return (
@@ -84,18 +84,23 @@ export default function Home() {
           name="task"
         />
         <button 
-          className="
+          className={`
             py-1 px-3 ring-1 ring-white rounded-md duration-300
-            hover:bg-gray-800
-          " 
+            hover:bg-gray-800 ${isFetchTodosLoading ? "bg-gray-600 cursor-not-allowed" : ""}
+          `} 
           type="submit"
+          disabled={isFetchTodosLoading}
           >
           Add task
         </button>
       </form>
       <ul className="text-center flex flex-col gap-2">
-        { todos.length > 0 
-          ? todos.map((todo, index) => (
+        {isFetchTodosLoading && <p className="text-gray-500 italic text-start text-xs">Loading..</p>}
+        {!isFetchTodosLoading && todos.length === 0 && (
+          <p className="text-gray-500 italic text-start text-xs">No todos yet..</p>
+        )}
+        { (!isFetchTodosLoading && todos.length > 0) && 
+          todos.map((todo, index) => (
             <li
               key={index}
               className="flex items-center gap-1 w-full"
@@ -112,9 +117,8 @@ export default function Home() {
               </button>
             </li>
           )) 
-
-          : <p className="text-gray-500 italic text-start text-xs">No todos yet..</p>
         }
+        
       </ul>
     </div>
    </main>
