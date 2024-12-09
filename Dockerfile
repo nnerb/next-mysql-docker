@@ -17,6 +17,8 @@ RUN npm install
 # Copy application files and set ownership
 COPY --chown=app:app . .
 
+RUN npx prisma generate
+
 # Expose the port
 EXPOSE 3000
 
