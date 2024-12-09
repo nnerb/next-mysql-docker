@@ -1,93 +1,69 @@
 "use client"
 
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { FormEvent, useEffect, useState } from "react";
-
-interface TodoProps {
-  id: number;
-  task: string;
-} 
-
+import { createTodo, deleteTodo, fetchTodos } from "./utils/api";
+import { TodoProps } from "./utils/types";
 
 export default function Home() {
 
   const [task, setTask] = useState("")
-  const [todos, setTodos] = useState<TodoProps[] | []>([])
 
-  useEffect(() => {
-    const fetchTodos =  async() => {
-      try {
-        const res = await fetch("/api/todo", {
-          method: "GET",
-          headers: {
-            "Content-type": "application/json"
-          },
-        })
-        if (res.ok) {
-          const data = await res.json()
-          setTodos(data)
-        } else {
-          console.log("Error fetching todos..")
-        }
-      } catch (error) { 
-        console.error("Error fetching todos..", error)
-      }
-    }
-    fetchTodos()
-  },[])
+  const { 
+    data,
+    error,
+    isLoading,
+    refetch: refetchGetTodos
+  } = useQuery<TodoProps[]>({
+    queryKey: ['todos'],
+    queryFn: fetchTodos
+  })
+  const todos = data ?? []
 
-  const handleAddTodo = async (e: FormEvent<HTMLFormElement>) => {
+  const {
+    mutate: createTodoMutation,
+    isSuccess: isCreateTodoSuccess,
+  } = useMutation({
+    mutationFn: createTodo,
+  })
+
+  const {
+    mutate: deleteTodoMutation,
+    isSuccess: isDeleteTodoSuccess
+  } = useMutation({
+    mutationFn: deleteTodo
+  })
+
+
+  const handleAddTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
-
-  if (task.trim() === "") return; 
-
-  try {
+    if (task.trim() === "") return; 
     const newTodo = { task };
-
-    const res = await fetch("/api/todo", { 
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      }, 
-      body: JSON.stringify(newTodo)
-    })
-
-    console.log(JSON.stringify(newTodo))
-
-    if (res.ok) {
-      const data = await res.json()
-      setTodos([...todos, data]);
-      setTask("");
-    } else {
-      console.log("Failed to add todo")
-    }
-  } catch (error) {
-    console.log("Failed to add todo", error)
+    createTodoMutation(newTodo)
+    setTask("")
   }
-  };
 
   const handleDelete = async (id: number) => {
     const todoToDelete = todos.find(todo => todo.id === id)
     if (!todoToDelete) return
-
-    try {
-      const res = await fetch(`/api/todo/${id}`,{
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json"
-        }
-      })
-      if (res.ok) {
-        setTodos(prev => prev.filter(todo => todo.id !== id))
-      } else {
-        console.error("Failed to delete the todo. Response status:", res.status);
-      }
-    } catch (error) {
-      console.error("Something went wrong", error)
-    }
-
+    deleteTodoMutation(id)
   }
 
+  useEffect(() => {
+    if (isCreateTodoSuccess || isDeleteTodoSuccess) {
+      refetchGetTodos()
+    }
+  }, [isCreateTodoSuccess, refetchGetTodos, isDeleteTodoSuccess])
 
+
+  if (error) {
+    return <p>There's an error fetching the data.</p>
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
+ 
   return (
    <main className="flex flex-col items-center border border-blue-00 mx-auto max-w-[350px] mt-10 rounded-lg">
     <div className="p-5 flex flex-col gap-5">
@@ -137,7 +113,7 @@ export default function Home() {
             </li>
           )) 
 
-          : <p>Loading..</p>
+          : <p className="text-gray-500 italic text-start text-xs">No todos yet..</p>
         }
       </ul>
     </div>

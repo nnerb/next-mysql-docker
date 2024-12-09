@@ -19,7 +19,7 @@ export async function POST(
       }
     })
     
-    return NextResponse.json(newTodo)
+    return NextResponse.json(newTodo, { status: 201 })
   } catch (error) {
     console.log("TODO_POST", error)
     return new NextResponse("Internal Error", { status: 500 })
