@@ -5,6 +5,7 @@ This project is a CRUD Todo App built with modern web technologies, designed to 
 ## Tools and Libraries
 
 - **Next.js**: React framework with server-side rendering and API routes.
+- **Docker**: Containerization platform used to package and run applications in isolated environments. It ensures consistency across multiple environments and helps with scalable deployments.
 - **React Query**: For efficient server state management and API integration.
 - **Prisma**: ORM for database modeling and type-safe queries.
 - **MySQL**: Relational database for structured data storage.

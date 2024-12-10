@@ -1,17 +1,95 @@
-### Building and running your application
+# Docker Setup for Next.js with Prisma and MySQL
 
-When you're ready, start your application by running:
-`docker compose up --build`.
+This document guides you through the process of setting up the Docker environment for running your **Next.js** application with **Prisma** as the ORM (Object-Relational Mapper) and a **MySQL** database.
 
-### Deploying your application to the cloud
+## Prerequisites
 
-First, build your image, e.g.: `docker build -t myapp .`.
-If your cloud uses a different CPU architecture than your development
-machine (e.g., you are on a Mac M1 and your cloud provider is amd64),
-you'll want to build the image for that platform, e.g.:
-`docker build --platform=linux/amd64 -t myapp .`.
+Ensure the following are installed:
 
-Then, push it to your registry, e.g. `docker push myregistry.com/myapp`.
+- **Docker**: [Download Docker](https://www.docker.com/products/docker-desktop)
+- **Docker Compose**: Comes bundled with Docker Desktop, or can be installed separately.
 
-Consult Docker's [getting started](https://docs.docker.com/go/get-started-sharing/)
-docs for more detail on building and pushing.
+## Setting Up the Docker Environment
+
+### 1. Clone the Repository
+
+If you haven't already, clone your project repository:
+
+```bash
+git clone <repository-url>
+cd <repository-folder>
+```
+
+### 2. Configuration Files
+Ensure you have the following configuration files in the root of your project:
+
+- Dockerfile: Defines how the Next.js app is built
+- docker-compose.yml: Defines the services (Next.js, MySQL) for Docker Compose.
+
+
+### 3. Build and run the Docker container:
+```bash
+docker-compose up --build
+```
+This command does the following:
+
+1. Builds the Docker images based on the Dockerfile.
+2. Starts the containers for the Next.js app and MySQL database.
+
+### 4. Verify the Containers are Running
+
+To check if the containers are up and running, use:
+
+```bash
+docker ps
+```
+You should see both the Next.js and MySQL containers listed.
+
+### 5. Access the Application
+Once the containers are running, open your browser and navigate to:
+
+Open [http://localhost:3000](http://localhost:300) to see the app in action.
+
+### 6. Interact with the MySQL Database
+To access MySQL, you can connect using a MySQL client or through the Docker container.
+
+Access via Command Line
+To connect to the MySQL container, use:
+```bash
+docker exec -it <mysql-container-name> mysql -u root -p
+```
+Access via Prisma Studio
+
+If you are using Prisma for database management, you can use Prisma Studio to interact with your MySQL database through a GUI. First, make sure your Docker container is running, and then use the following command:
+
+```bash
+npx prisma studio
+```
+This will open Prisma Studio in your browser, allowing you to manage the database visually, view records, update data, and perform other database operations.
+
+### 7. Stopping the Containers
+To stop the containers, run:
+```bash
+docker-compose down
+```
+
+To remove the containers and the associated volumes (e.g., MySQL data), run:
+```bash
+docker-compose down -v
+```
+
+### 8. Troubleshooting
+- Error: Port already in use: If you encounter this issue, ensure no other services are using the default MySQL or Next.js ports (3000 and 3306). You can change the ports in docker-compose.yml if needed.
+
+- Database connection issues: Make sure the MySQL container is up and running before interacting with it.
+
+- Prisma Studio not opening: If npx prisma studio does not open, ensure your containers are running and Prisma is properly configured in your project.
+
+## Additional Resources
+
+To learn more about the tools and libraries used in this project, check out the following resources:
+
+- [Docker Documentation](https://www.docker.com/) - Official Documentation for Docker.
+- [Prisma](https://www.prisma.io/) - Official documentation for Prisma
+
+Happy coding!🎉🎉🎉

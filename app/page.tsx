@@ -115,14 +115,12 @@ export default function Home() {
                 setTask('')
                 return
               }}
-              color="red"
               type="button"
             >
               Cancel
             </Button>
             <Button
               isLoading={isUpdateTodoPending}
-              color="blue"
               type="submit"
             >
               Save changes
@@ -132,7 +130,6 @@ export default function Home() {
           : (
           <Button
             isLoading={isLoadingOrPending}
-            color="gray"
             type="submit"
           >
            Add task
@@ -158,7 +155,6 @@ export default function Home() {
                 <Button
                   isLoading={isLoadingOrPending}
                   onClick={() => handleEdit(todo.id)}
-                  color="green"
                   type="submit"
                 >
                   Edit
@@ -166,7 +162,6 @@ export default function Home() {
                 <Button
                   isLoading={isLoadingOrPending}
                   onClick={() => handleDelete(todo.id)}
-                  color="red"
                   type="submit"
                 >
                   Delete
