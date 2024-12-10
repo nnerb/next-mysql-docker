@@ -27,6 +27,21 @@ export const createTodo = async (body: CreateTodoRequestBody) => {
   return res.json()
 }
 
+
+export const updateTodo = async (body: TodoProps) => {
+  const res = await fetch("/api/todo", { 
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body)
+  })
+  if (!res.ok) {
+    console.error("Failed to update todo")
+  } 
+  return res.json()
+}
+
 export const deleteTodo = async (id: number) => {
   const res = await fetch(`/api/todo/${id}`,{
     method: "DELETE",

@@ -1,16 +1,18 @@
 "use client"
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { FormEvent, useEffect, useState } from "react";
-import { createTodo, deleteTodo, fetchTodos } from "./utils/api";
+import { FormEvent, useState } from "react";
+import { createTodo, deleteTodo, fetchTodos, updateTodo } from "./utils/api";
 import { TodoProps } from "./utils/types";
+import Button from "./components/button";
 
 export default function Home() {
 
   const [task, setTask] = useState("")
+  const [idToEdit, setIdToEdit] = useState<number | null>(null)
 
     const { 
-      data: fetchTodo,
+      data: todos = [],
       error: isFetchTodosError,
       isLoading: isFetchTodosLoading,
       refetch: refetchGetTodos
@@ -18,43 +20,61 @@ export default function Home() {
       queryKey: ['todos'],
       queryFn: fetchTodos
     })
-    const todos = fetchTodo ?? []
 
   const {
     mutate: createTodoMutation,
-    isSuccess: isCreateTodoSuccess,
+    isPending: isCreateTodoPending
   } = useMutation({
     mutationFn: createTodo,
+    onSuccess: () => refetchGetTodos()
+  })
+
+  const {
+    mutate: updateTodoMutation,
+    isPending: isUpdateTodoPending
+  } = useMutation({
+    mutationFn: updateTodo,
+    onSuccess: () => {
+      setTask("")
+      setIdToEdit(null)
+      refetchGetTodos()
+    }
   })
 
   const {
     mutate: deleteTodoMutation,
-    isSuccess: isDeleteTodoSuccess
+    isPending: isDeleteTodoPending
   } = useMutation({
-    mutationFn: deleteTodo
+    mutationFn: deleteTodo,
+    onSuccess: () => refetchGetTodos()
   })
-
 
   const handleAddTodo = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault(); 
     if (task.trim() === "") return; 
-    const newTodo = { task };
-    createTodoMutation(newTodo)
+
+    if (idToEdit) {
+      updateTodoMutation({ id: idToEdit, task })
+      return
+    }
+    createTodoMutation({ task })
     setTask("")
+    return 
   }
 
   const handleDelete = async (id: number) => {
     const todoToDelete = todos.find(todo => todo.id === id)
     if (!todoToDelete) return
-    deleteTodoMutation(id)
+    return deleteTodoMutation(id)
   }
 
-  useEffect(() => {
-    if (isCreateTodoSuccess || isDeleteTodoSuccess) {
-      refetchGetTodos()
-    }
-  }, [isCreateTodoSuccess, refetchGetTodos, isDeleteTodoSuccess])
-
+  const handleEdit = (id: number) => {
+    const todoToEdit = todos.find((todo) => todo.id === id) 
+    if (!todoToEdit) return  
+    setTask(todoToEdit.task)
+    setIdToEdit(todoToEdit.id)
+    return
+  }
 
   if (isFetchTodosError) {
     return ( 
@@ -63,10 +83,12 @@ export default function Home() {
       </p>
     )
   }
+
+  const isLoadingOrPending = isFetchTodosLoading || isCreateTodoPending || isDeleteTodoPending || isUpdateTodoPending
  
   return (
-   <main className="flex flex-col items-center border border-blue-00 mx-auto max-w-[350px] mt-10 rounded-lg">
-    <div className="p-5 flex flex-col gap-5">
+   <main className="grid place-items-center mt-10 w-full">
+    <div className="p-5 flex flex-col gap-5 border rounded-lg">
       <h1 className="text-4xl">
         TO DO:
       </h1>
@@ -74,28 +96,52 @@ export default function Home() {
         <input
           placeholder="Type your todo here..."
           type="text"
+          disabled={isLoadingOrPending}
           onChange={(e) => setTask(e.target.value)}
           className="
             text-black text-xs py-1 px-2 
              ring-1 ring-slate-500  outline-0
-             focus:ring-slate-600 rounded-md
+             focus:ring-slate-400 rounded-md
           "
           value={task}
           name="task"
         />
-        <button 
-          className={`
-            py-1 px-3 ring-1 ring-white rounded-md duration-300
-            hover:bg-gray-800 ${isFetchTodosLoading ? "bg-gray-600 cursor-not-allowed" : ""}
-          `} 
-          type="submit"
-          disabled={isFetchTodosLoading}
+         {idToEdit ? (
+          <div className="flex items-center gap-1">
+            <Button
+              isLoading={isUpdateTodoPending}
+              onClick={() => {
+                setIdToEdit(null)
+                setTask('')
+                return
+              }}
+              color="red"
+              type="button"
+            >
+              Cancel
+            </Button>
+            <Button
+              isLoading={isUpdateTodoPending}
+              color="blue"
+              type="submit"
+            >
+              Save changes
+            </Button>
+          </div>
+         )
+          : (
+          <Button
+            isLoading={isLoadingOrPending}
+            color="gray"
+            type="submit"
           >
-          Add task
-        </button>
+           Add task
+          </Button>
+        )
+       }
       </form>
       <ul className="text-center flex flex-col gap-2">
-        {isFetchTodosLoading && <p className="text-gray-500 italic text-start text-xs">Loading..</p>}
+        {isFetchTodosLoading && <p className="text-gray-500 italic text-start text-xs">Fetching todos..</p>}
         {!isFetchTodosLoading && todos.length === 0 && (
           <p className="text-gray-500 italic text-start text-xs">No todos yet..</p>
         )}
@@ -106,15 +152,26 @@ export default function Home() {
               className="flex items-center gap-1 w-full"
             >
               <p>- {todo.task}</p>
-              <button 
-                className="
-                  ml-auto py-1 px-3 ring-1 ring-white rounded-md duration-300
-                hover:bg-red-800 text-sm
-                "
-                onClick={() => handleDelete(todo.id)}
+             {!idToEdit && (
+              <div className="ml-auto flex items-center gap-2">
+                <Button
+                  isLoading={isLoadingOrPending}
+                  onClick={() => handleEdit(todo.id)}
+                  color="green"
+                  type="submit"
                 >
-                Delete
-              </button>
+                  Edit
+                </Button>
+                <Button
+                  isLoading={isLoadingOrPending}
+                  onClick={() => handleDelete(todo.id)}
+                  color="red"
+                  type="submit"
+                >
+                  Delete
+                </Button>
+              </div>
+            )}
             </li>
           )) 
         }
