@@ -2,10 +2,6 @@
 
 This project is a CRUD Todo App built with modern web technologies, designed to be scalable and maintainable. The app is Dockerized for seamless deployment and uses MySQL for data persistence.
 
-## Live Demo
-
-A live demo of this project can be viewed at [Your Live Link Here](https://your-link-here.com).
-
 ## Tools and Libraries
 
 - **Next.js**: React framework with server-side rendering and API routes.
@@ -37,10 +33,10 @@ Ensure you have the following installed:
 
 1. Clone the repository:
 
-   ```bash
-   git clone <repository-url>
-   cd <repository-folder>
-    ```
+```bash
+git clone <repository-url>
+cd <repository-folder>
+```
 
 2. Install the project dependencies:
 
