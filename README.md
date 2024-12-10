@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dockerized Next.js CRUD Todo App
+
+This project is a CRUD Todo App built with modern web technologies, designed to be scalable and maintainable. The app is Dockerized for seamless deployment and uses MySQL for data persistence.
+
+## Live Demo
+
+A live demo of this project can be viewed at [Your Live Link Here](https://your-link-here.com).
+
+## Tools and Libraries
+
+- **Next.js**: React framework with server-side rendering and API routes.
+- **React Query**: For efficient server state management and API integration.
+- **Prisma**: ORM for database modeling and type-safe queries.
+- **MySQL**: Relational database for structured data storage.
+- **TailwindCSS**: A utility-first CSS framework for styling.
+- **TypeScript**: Enhances code reliability with strong typing.
+
+## Features
+
+- **CRUD Operations**: Add, view, edit, and delete tasks.
+- **Responsive UI**: Built with TailwindCSS for a clean and adaptable interface.
+- **State Management**: Uses React Query for efficient fetching and mutation of data.
+- **Database Integration**: MySQL and Prisma for a reliable database solution.
+- **Dockerized Deployment**: The app is containerized with Docker for easy deployment.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Ensure you have the following installed:
+
+- Docker
+- Node.js (v16 or newer)
+- npm, yarn, or pnpm (any package manager)
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
+    ```
+
+2. Install the project dependencies:
 
 ```bash
-npm run dev
+npm install
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Build and run the Docker container:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+docker-compose up --build 
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open your app in your browser:
+Open [http://localhost:3000](http://localhost:300) to see the app in action.
 
-## Learn More
+## Additional Resources
 
-To learn more about Next.js, take a look at the following resources:
+To learn more about the tools and libraries used in this project, check out the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/) - Learn about Vite's features and APIs.
+- [React Documentation](https://reactjs.org/) - Official documentation for React.
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - Explore Tailwind CSS and its utility-first approach to styling.
+- [TypeScript Documentation](https://www.typescriptlang.org/) - Learn about type safety.
+- [React Query Documentation](https://tanstack.com/query/latest/docs/framework/react/overview) -  Official documentation for React Query (TanStack Query). 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Happy coding!🎉🎉🎉
