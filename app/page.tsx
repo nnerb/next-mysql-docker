@@ -140,6 +140,7 @@ export default function Home() {
         )
        }
       </form>
+      {/* <button onClick={() => fetchTodos}>click me</button> */}
       <ul className="text-center flex flex-col gap-2">
         {isFetchTodosLoading && <p className="text-gray-500 italic text-start text-xs">Fetching todos..</p>}
         {!isFetchTodosLoading && todos.length === 0 && (
