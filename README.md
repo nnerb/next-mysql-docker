@@ -52,7 +52,8 @@ Create a .env file in the root of the project and add the following environment 
 # .env
 ```ini
 MYSQL_ROOT_PASSWORD=your_mysql_root_password
-DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/todoapp-db
+MYSQL_DATABASE_NAME=your_db_name_here
+DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE_NAME}
 ```
 4. Build and run the Docker container:
 

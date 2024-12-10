@@ -5,11 +5,11 @@ services:
       - "3000:3000" 
     environment:
       NODE_ENV: development  # Set the environment to 'development'
-      DATABASE_URL: mysql://root:rootpassword@mysql:3306/todoapp-db
+      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE_NAME}
     depends_on:
       - mysql
     entrypoint: >
-      sh -c "npx prisma generate && npm run dev"
+      sh -c "./wait-for-it.sh mysql:3306 -- npx prisma generate && npx prisma db push && npm run dev"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000"]
       interval: 10s
@@ -29,8 +29,8 @@ services:
   mysql:
     image: mysql:5.7  # Use MySQL version 5.7
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword  # Set the MySQL root password
-      MYSQL_DATABASE: todoapp-db # Automatically create the db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Set the MySQL root password
+      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME} # Automatically create the db
     volumes:
       - mysql-data:/var/lib/mysql  # Persist MySQL data between container restarts
     ports:
