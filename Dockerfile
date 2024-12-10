@@ -17,7 +17,11 @@ RUN npm install
 # Copy application files and set ownership
 COPY --chown=app:app . .
 
+# Generate Prisma client
 RUN npx prisma generate
+
+# Push the database schema (to ensure it's in sync with the Prisma schema)
+RUN npx prisma db push
 
 # Expose the port
 EXPOSE 3000

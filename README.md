@@ -47,13 +47,20 @@ npm install
 yarn install
 ```
 
-3. Build and run the Docker container:
+3. Create the .env file:
+Create a .env file in the root of the project and add the following environment variables (you can use .env.example as a reference):
+# .env
+```ini
+MYSQL_ROOT_PASSWORD=your_mysql_root_password
+DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/todoapp-db
+```
+4. Build and run the Docker container:
 
 ```bash
 docker-compose up --build 
 ```
 
-4. Open your app in your browser:
+5. Open your app in your browser:
 Open [http://localhost:3000](http://localhost:300) to see the app in action.
 
 ## Additional Resources
