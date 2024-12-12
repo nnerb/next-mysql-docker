@@ -61,14 +61,14 @@ This document explains the differences between two common database connection co
 
 1. Using `localhost:3307` (for local environments)
 ```ini
-DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3307/${MYSQL_DATABASE_NAME}
+LOCAL_DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@localhost:3307/${MYSQL_DATABASE_NAME}
 ```
 - Usage: This configuration is used when running Prisma and the database locally on your machine.
 - Use Case:  In this case, localhost refers to your local machine (host), and Prisma connects to the database running locally on port 3307. This setup is suitable for local development or testing, where Prisma needs to access a MySQL database running outside of Docker.  
 
 2. Using `mysqlhost:3306` (for Dockerized environments)
 ```ini
-DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE_NAME}
+DOCKER_DATABASE_URL=mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE_NAME}
 ```
 - Usage: This configuration is used when both your app and database are running inside Docker containers.
 - Explanation: When the app and database are running in separate Docker containers, mysql refers to the service name of the MySQL container in the Docker Compose file. Docker uses internal networking to resolve service names, so mysql connects to the MySQL database container running on port 3306. This setup ensures that Prisma can connect to the database running inside a Docker container.

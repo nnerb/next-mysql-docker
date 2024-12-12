@@ -5,7 +5,7 @@ services:
       - "3000:3000" 
     environment:
       NODE_ENV: development
-      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql-db:3306/${MYSQL_DATABASE}
+      DATABASE_URL: ${DOCKER_DATABASE_URL}
     depends_on:
       - mysql-db
     develop:
