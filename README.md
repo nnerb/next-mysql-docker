@@ -55,7 +55,7 @@ MYSQL_ROOT_PASSWORD=your_mysql_root_password
 MYSQL_DATABASE_NAME=your_db_name_here
 ```
 
-Database Configuration for Dockerized Application
+#### Database Configuration for Dockerized Application
 
 This document explains the differences between two common database connection configurations used in a Dockerized environment for MySQL.
 
