@@ -4,42 +4,33 @@ services:
     ports:
       - "3000:3000" 
     environment:
-      NODE_ENV: development  # Set the environment to 'development'
-      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql:3306/${MYSQL_DATABASE_NAME}
+      NODE_ENV: development
+      DATABASE_URL: mysql://root:${MYSQL_ROOT_PASSWORD}@mysql-db:3306/${MYSQL_DATABASE}
     depends_on:
-      - mysql
-    entrypoint: >
-      sh -c "./wait-for-it.sh mysql:3306 -- npx prisma generate && npx prisma db push && npm run dev"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - mysql-db
     develop:
       watch:
         - action: sync
-          path: ./app        # Path to your app directory on the host
-          target: /app/app       # Path where files will be synced inside the container
+          path: ./app    
+          target: /app/app
           ignore:
-            - node_modules/   # Ignore node_modules directory to avoid syncing it
+            - node_modules/
         - action: rebuild
           path: package.json
-
-  # MySQL database
-  mysql:
-    image: mysql:5.7  # Use MySQL version 5.7
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} # Set the MySQL root password
-      MYSQL_DATABASE: ${MYSQL_DATABASE_NAME} # Automatically create the db
     volumes:
-      - mysql-data:/var/lib/mysql  # Persist MySQL data between container restarts
+      - todo-db:/var/lib/mysql
+
+  mysql-db:
+    image: mysql:9.1.0
+    command: --default-time-zone='+00:00'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - "3306:3306"  # Expose MySQL on port 3306
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      
+      - "3307:3306"
+    volumes:
+      - todo-db:/var/lib/mysql
+
 volumes:
-  mysql-data:  # Declare the volume for MySQL persistence
+  todo-db:
+    driver: local
